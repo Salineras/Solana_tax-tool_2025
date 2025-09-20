@@ -1,0 +1,12 @@
+{
+  "api_key_Chainstack" : "api-key記入",
+  "address" : [
+    "ウォレットアドレス"
+  ],
+  "CEX withdraw address" : [
+    "0x60dd01bc037e2c1ea2aaf02187701f9f4453ba323338d2f2f521957065b0984d"
+  ],
+  "CEX deposit address" : [
+    "CEXへの送金先のアドレス"
+  ]
+}
