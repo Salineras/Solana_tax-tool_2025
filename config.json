@@ -1,22 +1,23 @@
 {
-  "api_key_Helius"  : "api-key‚ð‹L“ü‚·‚é",
-  "api_key_Alchemy" : "api-key‚ð‹L“ü‚·‚é",
-  "api_key_Birdeye" : "api-key‚ð‹L“ü‚·‚é",
+  "api_key_Helius"  : "api-keyã‚’è¨˜å…¥ã™ã‚‹",
+  "api_key_Alchemy" : "api-keyã‚’è¨˜å…¥ã™ã‚‹",
+  "api_key_Birdeye" : "",
   "address" : [
-    "Ž©•ª‚ÌƒEƒHƒŒƒbƒgƒAƒhƒŒƒX1i‘‚â‚µ‚Ä‚àOKj",
-    "Ž©•ª‚ÌƒEƒHƒŒƒbƒgƒAƒhƒŒƒX2i‘‚â‚µ‚Ä‚àOKj",
-    "Ž©•ª‚ÌƒEƒHƒŒƒbƒgƒAƒhƒŒƒX3i‘‚â‚µ‚Ä‚àOKj"
+    "è‡ªåˆ†ã®ã‚¦ã‚©ãƒ¬ãƒƒãƒˆã‚¢ãƒ‰ãƒ¬ã‚¹1ï¼ˆå¢—ã‚„ã—ã¦ã‚‚OKï¼‰",
+    "è‡ªåˆ†ã®ã‚¦ã‚©ãƒ¬ãƒƒãƒˆã‚¢ãƒ‰ãƒ¬ã‚¹2ï¼ˆå¢—ã‚„ã—ã¦ã‚‚OKï¼‰",
+    "è‡ªåˆ†ã®ã‚¦ã‚©ãƒ¬ãƒƒãƒˆã‚¢ãƒ‰ãƒ¬ã‚¹3ï¼ˆå¢—ã‚„ã—ã¦ã‚‚OKï¼‰"
   ],
   "CEX withdraw address" : [
     "Gem2VAypSg7Ai7vjDKPTtqFahpoQWkfgVkyzx3rPoTka",
     "2qo8jvuc49pFmTjmUHLiARSV6ppPTaE7gw27ZJ6DnNZy",
     "AC5RDfQFmDS1deWZos921JfqscXdByf8BKHs5ACWjtW2",
     "A77HErqtfN1hLLpvZ9pCtu66FEtM8BveoaKbbMoZ4RiR",
-    "CEX‚©‚ç‚Ìo‹àŒ³ƒAƒhƒŒƒXi‘‚â‚µ‚Ä‚àOKj"
+    "CEXã‹ã‚‰ã®å‡ºé‡‘å…ƒã‚¢ãƒ‰ãƒ¬ã‚¹ï¼ˆå¢—ã‚„ã—ã¦ã‚‚OKï¼‰"
   ],
   "CEX deposit address" : [
-    "CEX‚Ö‚Ì‘—‹àæ‚ÌƒAƒhƒŒƒX1i‘‚â‚µ‚Ä‚àOKj",
-    "CEX‚Ö‚Ì‘—‹àæ‚ÌƒAƒhƒŒƒX2i‘‚â‚µ‚Ä‚àOKj",
-    "CEX‚Ö‚Ì‘—‹àæ‚ÌƒAƒhƒŒƒX3i‘‚â‚µ‚Ä‚àOKj"
+    "CEXã¸ã®é€é‡‘å…ˆã®ã‚¢ãƒ‰ãƒ¬ã‚¹1ï¼ˆå¢—ã‚„ã—ã¦ã‚‚OKï¼‰",
+    "CEXã¸ã®é€é‡‘å…ˆã®ã‚¢ãƒ‰ãƒ¬ã‚¹2ï¼ˆå¢—ã‚„ã—ã¦ã‚‚OKï¼‰",
+    "CEXã¸ã®é€é‡‘å…ˆã®ã‚¢ãƒ‰ãƒ¬ã‚¹3ï¼ˆå¢—ã‚„ã—ã¦ã‚‚OKï¼‰"
   ]
+
 }
