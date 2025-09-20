@@ -112,7 +112,7 @@ python main.py
 ・[Gtaxも同様の原理（使い方の6参照）](https://note.com/salineras/n/n13dfe5eee8fa)
 
 ## サポート
-質問やバグ報告はIssuesにお願いします  
+質問やバグ報告は[Issues](https://github.com/Salineras/Solana_tax-tool_2025/issues)にお願いします  
 
 ## ライセンス
 このソフトウェアは、コピー利用、配布、変更の追加、変更を加えたもの再配布、商用利用、有料販売など、どなたも自由にお使いいただくことができます。  
