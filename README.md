@@ -27,7 +27,7 @@ CryptactはSolanaに対応しているが使い物にならなかったので自
   - requests,pandas,numpy,xlsxwriter,tqdm  
   - Suiのみ：asyncio,aiohttp  
 
-## Solanaの利用方法（Suiは後述）
+## Solanaの利用方法
 ### 必須準備  
 1.APIキー取得（無料枠でOK）  
 　Alchemy、Heliusに登録  
