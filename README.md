@@ -112,6 +112,39 @@ custom.xlsx が生成される
 - Jupiter投票、$JUPのアンロック周り、ごく一部のエアドロにも対応  
 - これ以外の流動性提供やNFT関係は未対応  
 
+## Suiの利用方法
+Suiの利用が少なく対応範囲も狭いため、おまけという位置づけ  
+基本的な使い方はSolanaと同じため差分に絞って解説
+- ルートフォルダはSui、データなどはSui\resourcesフォルダに格納
+- APIキー：Chainstackから取得
+- トークンリスト作成
+```bash
+python sui\token_liset.py
+```
+　metastableのmUSD（meta USD）はUSER-USDとすること
+- Tx取得  
+Chainstackのサーバーが不安定で失敗したら再実行が必要なため単独で行う
+```bash
+python sui\download.py
+```
+
+- メイン処理
+```bash
+python sui\main.py
+```
+
+- 対応取引  
+スワップ、一部のレンディング、ブリッジ（Portal,SuiBridge,CCTP）、Tx失敗
+
+- レンディング  
+Scallop,Kai FinanceのUSDCのみ対応
+Solana同様Lendingシートから利息の計算結果を転記する
+
+- ガス代がマイナスならBONUS  
+Storage rebeteが大きいとガス代がマイナスになる（Suiが増える）  
+この場合はBONUSとしている
+
+
 ## 補足
 - ブリッジによるラップコイン（USDC,USDCETなど）は別コインとして扱われる  
 - 「ポジション不足」エラー回避のため、USDCET→USDCのスワップとして処理すればよい  
