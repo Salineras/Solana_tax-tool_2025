@@ -1,4 +1,4 @@
-# カスタムファイル自動作成（Solana用、2025年版）
+# カスタムファイル自動作成（Solana用2025年版）
 SolanaのTxからCryptactのカスタムファイルを自動生成するPythonツール  
 CryptactはSolanaに対応しているが使い物にならなかったので自作（おまけでSuiにも対応）  
 
