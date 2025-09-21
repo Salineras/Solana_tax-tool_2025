@@ -39,8 +39,9 @@ CryptactはSolanaに対応しているが使い物にならなかったので自
 ```bash
 python token_list.py
 ```
-　data/Token - {your_address}.csv が生成される  
-　SymbolのティッカーをCryptact対応ティッカーに変更  
+- data/Token - {your_address}.csv が生成される  
+- SymbolのティッカーをCryptact対応ティッカーに変更  
+- カスタムファイルに記載されるティッカーのみの変更でよい  
 #### ティッカー変更ルール  
 - 未対応コインはUSER-○○を使用（DEFI-○○は使用しない）  
 - 特定コイン  
@@ -65,13 +66,13 @@ custom.xlsx が生成される
 - dfシート：取得したTxの生データ（Solscan風）  
 - Lendingシート：レンディング利息計算  
 - sUSDシート: sUSD償還・鋳造記録  
-- PST･mPSTシート: PST,mPST記録（閲覧用、Swapとしてカスタムファイルに計上済み）  
+- PST･mPSTシート: PST,mPST記録（閲覧用、PST,mPST償還・鋳造は計上済み）  
 
 ### 3.後処理（重要）  
 - 「不明」：各自で調査し適切な値を記入  
 - 「注意Swap」：未対応コイン同士のスワップ、価格の確認・未取得なら補完  
 - レンディング利息：Lendingシートから計算結果をカスタムファイルへ転記（入出金にかかるガス代は計上済み）  
-- USDの償還・鋳造記録：価格などに異常がないか確認の上カスタムファイルへ転記  
+- sUSDの償還・鋳造記録：価格などに異常がないか確認の上カスタムファイルへ転記  
 - CryptactStandardシートからTx列を削除してアップロード  
 
 ## 対応取引
@@ -84,7 +85,7 @@ custom.xlsx が生成される
 2.Scam  
 - ダスティング攻撃：BONUS  
 - $○○AirdropのようなcNFTの送りつけ：除外  
-- scam.txtに記入の送信者（scammers）で判別、リストに追加すればそちらも自動除外する  
+- scam.txtに記入の送信者（scammers）で判別、新たにリストに追加すればそちらも処理する  
 
 3.送金・入金  
 - ほぼ対応  
@@ -92,8 +93,6 @@ custom.xlsx が生成される
 
 4.ブリッジ  
 - Portalはほぼ対応、それ以外は未対応  
-- PortalでのCCTP利用によるUSDC自動付与（6月ぐらいに始まったサービス）  
-　ガス代はPortal持ちなので、カスタムファイルからは除外  
 - Jupiter、StargateのCCTPに対応、それ以外は不明  
 
 5.レンディング  
@@ -121,7 +120,7 @@ Sui対応は限定的であり補助的な位置づけ
 ```bash
 python sui\token_list.py
 ```
-　metastableのmUSD（meta USD）はUSER-USDとすること
+　　metastableのmUSD（meta USD）はUSER-USDとすること
 - Tx取得  
 Chainstackのサーバーが不安定で失敗したら再実行が必要なため単独で行う
 ```bash
@@ -134,10 +133,10 @@ python sui\main.py
 ```
 
 - 対応取引  
-スワップ、一部のレンディング、ブリッジ（Portal,SuiBridge,CCTP）、Tx失敗
+スワップ、一部のレンディング、ブリッジ（Portal、SuiBridge、CCTP）、Tx失敗
 
 - レンディング  
-Scallop,Kai FinanceのUSDCのみ対応
+Scallop、Kai FinanceのUSDCのみ対応
 Solana同様Lendingシートから利息の計算結果を転記する
 
 - ガス代がマイナスならBONUS  
@@ -146,8 +145,8 @@ Solana同様Lendingシートから利息の計算結果を転記する
 Suiではデータ削除時の報酬（Storage rebate）がガス代を上回る場合がある  
 
 ## 補足
-- ブリッジによるラップコイン（USDC,USDCETなど）は別コインとして扱われる  
-- 「ポジション不足」エラー回避のため、USDCET→USDCのスワップとして処理すればよい  
+- ブリッジによるラップコイン（例：USDCET）と元のコイン（USDC）は別コインとして扱われる  
+- ブリッジによる「ポジション不足」エラー回避のため、USDCET→USDCのスワップとして処理すればよい  
 - Gtaxも同様の原理[（使い方の6参照）](https://note.com/salineras/n/n13dfe5eee8fa)
 
 ## サポート
