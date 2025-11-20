@@ -117,7 +117,7 @@ Sui対応は限定的であり補助的な位置づけ
 ```bash
 python sui\token_list.py
 ```
-　　metastableのmUSD（meta USD）はUSER-USDとすること
+　　metastableのmUSD（meta USD）はUSER-MUSDとすること
 - Tx取得  
 Chainstackのサーバーが不安定で失敗したら再実行が必要なため単独で行う
 ```bash
