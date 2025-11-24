@@ -112,17 +112,12 @@ custom.xlsx が生成される
 Sui対応は限定的であり補助的な位置づけ  
 基本的な使い方はSolanaと同じため差分に絞って解説
 - ルートフォルダはSui、データなどはSui\resourcesフォルダに格納
-- APIキー：Chainstackから取得
+- APIキー：Shinamiの東京リージョンで取得
 - トークンリスト作成
 ```bash
 python sui\token_list.py
 ```
 　　metastableのmUSD（meta USD）はUSER-MUSDとすること
-- Tx取得  
-Chainstackのサーバーが不安定で失敗したら再実行が必要なため単独で行う
-```bash
-python sui\download.py
-```
 
 - メイン処理
 ```bash
