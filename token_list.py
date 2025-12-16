@@ -1,7 +1,7 @@
 import requests, json, csv
 
 def token_account():
-    with open("config.json", "r", encoding="shift-jis") as f:
+    with open("config.json", "r", encoding="cp932") as f:
         config    = json.load(f)
         api_key   = config["api_key_Helius"]
         addresses = config["address"]
@@ -29,4 +29,5 @@ def token_account():
                 writer.writerow([account, mint, decimals, symbol])
 
 if __name__ == "__main__":
+
     token_account()
