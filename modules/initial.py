@@ -4,9 +4,8 @@ from tqdm import tqdm
 from datetime import datetime, timezone ,timedelta
 
 def fetch_tx(limit=1000, cutoff_time=1735657200):     #2025/01/01 00:00:00 JST
-    with open("config.json", "r", encoding="cp932") as f:
-        api_key = json.load(f)["api_key_Alchemy"]
-    url = f"https://solana-mainnet.g.alchemy.com/v2/{api_key}"
+    api_key = json.load(open("config.json", "r", encoding="cp932"))["api_key_Helius"]
+    url = f"https://mainnet.helius-rpc.com/?api-key={api_key}"
 
     df = pd.concat([pd.read_csv(p) for p in glob.glob("data//Token - *.csv")])
     usdc = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
@@ -23,8 +22,9 @@ def fetch_tx(limit=1000, cutoff_time=1735657200):     #2025/01/01 00:00:00 JST
             response = requests.post(url, json=payload).json()
 
             result  = response.get("result", [])
+
             if not result:
-                print(f"Tx一覧取得失敗？  総取得数：{len(tx_lists)}  アドレス：{address}")
+                print(f"Tx一覧取得失敗？  アドレス：{address}")
                 break
 
             tx_lists.extend(result)
@@ -35,12 +35,14 @@ def fetch_tx(limit=1000, cutoff_time=1735657200):     #2025/01/01 00:00:00 JST
     tx_lists = [tx["signature"] for tx in tx_lists if tx["blockTime"] >= cutoff_time]
     tx_lists = list(dict.fromkeys(tx_lists))
 
-    return tx_lists, url
+    return tx_lists
 
-def fetch_tx_data(tx_lists, url, interval=10, batch_size=100):
+def fetch_tx_data(tx_lists, interval=10, batch_size=100):
+    api_key = json.load(open("config.json", "r", encoding="cp932"))["api_key_Alchemy"]
+    url = f"https://solana-mainnet.g.alchemy.com/v2/{api_key}"
     all_txs =[]
 
-    for i in tqdm(range(0, len(tx_lists), batch_size), leave=False, desc= "Tx取得状況"):
+    for i in tqdm(range(0, len(tx_lists), batch_size), leave=False, desc= "Tx取得中"):
         payload = [{"jsonrpc": "2.0", "id": idx + 1, "method": "getTransaction",
                     "params": [tx, {"encoding": "jsonParsed", "maxSupportedTransactionVersion": 0}]}
                     for idx, tx in enumerate(tx_lists[i:i + batch_size])]
@@ -56,7 +58,7 @@ def fetch_tx_data(tx_lists, url, interval=10, batch_size=100):
 
             if not res.get("result"):
                 print(f"！！！ Tx取得失敗 ！！！")
-                continue
+                sys.exit()
 
             all_txs.append(res["result"])
 
@@ -81,7 +83,7 @@ def extract_tx(txs):
             if result := _get_instruction(instruction):
                 instruction_data.append(result)
 
-        exclusion = "Transfer", "TransferChecked", "CreateAccount", "CloseAccount", "MintTo", "Burn", "SharedAccountsRoute"
+        exclusion = "Transfer", "TransferChecked", "CreateAccount", "MintTo", "Burn", "SharedAccountsRoute"
         logMessages = ", ".join(log[26:] for log in tx["meta"]["logMessages"]
                       if "Program log: Instruction:" in log and log[26:] not in exclusion) # log[26:] "Program log: Instruction: "以降
         
@@ -150,7 +152,7 @@ def filter_scam(df):
                     df.at[idx, col] = [df.at[idx, col][i] for i in indices]
 
     df.loc[scam_mask, "Action"] = "Dusting Attack"
-    dusting_attack = scam_mask & df["Error"].notna()
+    dusting_attack = scam_mask & (df["Error"].notna() | df["Amount"].isin([[None], [None, None]]))
     cNFT_attack    = scam_mask & df["Type"].apply(lambda type: any(t == "MintToCollectionV1" for t in type))
 
     df = df[~(dusting_attack | cNFT_attack)].reset_index(drop=True)
@@ -192,8 +194,8 @@ def _run_initial():
     return df
 
 if __name__ == "__main__":
-    tx_lists, url = fetch_tx()
-    all_txs       = fetch_tx_data(tx_lists, url)
+    tx_lists = fetch_tx()
+    all_txs  = fetch_tx_data(tx_lists)
 
     open("data\\TxList.txt", "w").write("\n".join(tx_lists))
     with open("data\\TxData.json", "w", encoding="utf-8") as f:
