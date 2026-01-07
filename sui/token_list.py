@@ -1,12 +1,12 @@
 import requests, json, csv
 
 def token_account():
-    with open("sui\\config.json", "r", encoding="shift-jis") as f:
+    with open("sui/config.json", "r", encoding="cp932") as f:
         config    = json.load(f)
-        api_key   = config["api_key_Chainstack"]
+        api_key   = config["api_key_Shinami"]
         addresses = config["address"]
 
-    url = f"https://sui-mainnet.core.chainstack.com/{api_key}"
+    url = f"https://api.apac1.shinami.com/sui/node/v1/{api_key}"
     for address in addresses:
         cursor, coins = None, []
         while True:
@@ -23,6 +23,7 @@ def token_account():
 
         coins = list(dict.fromkeys(coins))
         coins = ["0x0" + coin[2:] if len(coin.split("::")[0]) == 65 else coin for coin in coins]
+        coins = ["0x00" + coin[2:] if len(coin.split("::")[0]) == 64 else coin for coin in coins]
 
         data = [{"address" : "0xf325ce1300e8dac124071d3152c5c5ee6174914f8bc2161e88329cf579246efc::afsui::AFSUI",
                  "decimals": 9, "symbol": "AFSUI"}]
@@ -40,7 +41,7 @@ def token_account():
                          "decimals": result["decimals"],
                          "symbol"  : result["symbol"].upper()})
 
-        with open(f"sui\\resources\\Token - {address}.csv", "w", newline="", encoding="utf-8") as f:
+        with open(f"sui/resources/Token - {address}.csv", "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=["address", "decimals", "symbol"])
             writer.writeheader()
             writer.writerows(data)
