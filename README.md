@@ -30,7 +30,7 @@
 　Alchemy、Heliusに登録  
  
 2.設定ファイル編集  
-　config.iniにAPIキー、ウォレットアドレスなどを記入  
+　config.jsonにAPIキー、ウォレットアドレスなどを記入  
   
 3.トークンリスト作成  
 ```bash
