@@ -143,8 +143,9 @@ def _copy_swap(df):
         out_tickers = group["Ticker"].values[out_valid]
         out_ticker  = out_tickers[1] if group["コメント"].iat[0] == "Swap,rent代" else out_tickers[0]
 
-        jito_tip = out_amounts[-1] if (group["Destination"].iat[-1]) in JITO_TIP else 0
-        rent_fee = out_amounts[0] if group["コメント"].iat[0] == "Swap,rent代" else 0
+        jito_tip = out_amounts[-1] if group["Destination"].iat[-1] in JITO_TIP else 0
+        rent_fee = out_amounts[0]  if group["コメント"].iat[0] == "Swap,rent代" else 0
+        jito_tip = np.nan_to_num(jito_tip)
 
         jupiter_fee = 0
         if out_valid.sum() >= 2 and in_ticker in out_tickers:
@@ -154,34 +155,27 @@ def _copy_swap(df):
         net_out = out_amounts[out_valid].sum() - jito_tip - jupiter_fee - rent_fee
         net_fee = group["Fee"].iat[0] + jito_tip + rent_fee
 
-        keys    = ["種類", "主軸通貨", "取引量", "価格", "決済通貨", "手数料", "手数料通貨"]
-        ex_keys = ["種類", "主軸通貨", "取引量",         "決済通貨", "手数料", "手数料通貨", "コメント"]
+        keys = ["種類", "主軸通貨", "取引量", "価格", "決済通貨", "手数料", "手数料通貨", "コメント"]
 
         if "USDC" == in_ticker:
-            vals = ["SELL", out_ticker, net_out, f"={net_in}/{net_out}", in_ticker, net_fee, "SOL"]
-            updates[first_idx] = dict(zip(keys, vals))
-        
+            vals = [["SELL", out_ticker, net_out, f"={net_in}/{net_out}", in_ticker, net_fee, "SOL", None]]
         elif "USER-" not in out_ticker:
-            vals = ["BUY", in_ticker, net_in, f"={net_out}/{net_in}", out_ticker, net_fee, "SOL"]
-            updates[first_idx] = dict(zip(keys, vals))
-
+            vals = [["BUY", in_ticker, net_in, f"={net_out}/{net_in}", out_ticker, net_fee, "SOL", None]]
         elif "USER-" not in in_ticker:
-            vals = ["SELL", out_ticker, net_out, f"={net_in}/{net_out}", in_ticker, net_fee, "SOL"]
-            updates[first_idx] = dict(zip(keys, vals))
-
+            vals = [["SELL", out_ticker, net_out, f"={net_in}/{net_out}", in_ticker, net_fee, "SOL", None]]
         else:
-            vals_buy  = ["BUY", in_ticker, net_in, "JPY", net_fee, "SOL", "注意Swap"]
-            vals_sell = ["SELL", out_ticker, net_out, "JPY", 0, "SOL", "注意Swap"]
-            updates[first_idx]  = dict(zip(ex_keys, vals_buy))
-            updates[second_idx] = dict(zip(ex_keys, vals_sell))
+            vals = [["BUY", in_ticker, net_in, None, "JPY", net_fee, "SOL", "注意Swap"],
+                    ["SELL", out_ticker, net_out, None, "JPY", 0, "SOL", "注意Swap"]]
 
         if jupiter_fee > 0:
             fee_idx = second_idx + 1 if ("USER-" in in_ticker) and ("USER-" in out_ticker) else second_idx
-            vals = ["DEFIFEE", in_ticker, jupiter_fee, "JPY", 0, "JPY", "Jupiter手数料"]
-            updates[fee_idx] = dict(zip(ex_keys, vals))
+            fee_vals = ["DEFIFEE", in_ticker, jupiter_fee, None,"JPY", 0, "JPY", "Jupiter手数料"]
+            updates[fee_idx] = dict(zip(keys, fee_vals))
 
-    df_updates = pd.DataFrame.from_dict(updates, orient='index')
-    df.update(df_updates.reindex(df.index))
+        for i, vals in enumerate(vals):
+            updates[first_idx + i] = dict(zip(keys, vals))
+
+    df.update(pd.DataFrame.from_dict(updates, orient='index'))
     return df
 
 def _copy_fee(df):
@@ -240,11 +234,50 @@ JITO_TIP = {"96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5",
             "DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh",
             "ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt",
             "DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL",
-            "3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT"}
+            "3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT",
+            "TEMPaMeCRFAS9EKF53Jd6KpHxgL47uWLcpFArU1Fanq", #以下はNOZOMI tip（TitanがJito tip代わりに使用）
+            "noz3jAjPiHuBPqiSPkkugaJDkJscPuRhYnSpbi8UvC4",
+            "noz3str9KXfpKknefHji8L1mPgimezaiUyCHYMDv1GE",
+            "noz6uoYCDijhu1V7cutCpwxNiSovEwLdRHPwmgCGDNo",
+            "noz9EPNcT7WH6Sou3sr3GGjHQYVkN3DNirpbvDkv9YJ",
+            "nozc5yT15LazbLTFVZzoNZCwjh3yUtW86LoUyqsBu4L",
+            "nozFrhfnNGoyqwVuwPAW4aaGqempx4PU6g6D9CJMv7Z",
+            "nozievPk7HyK1Rqy1MPJwVQ7qQg2QoJGyP71oeDwbsu",
+            "noznbgwYnBLDHu8wcQVCEw6kDrXkPdKkydGJGNXGvL7",
+            "nozNVWs5N8mgzuD3qigrCG2UoKxZttxzZ85pvAQVrbP",
+            "nozpEGbwx4BcGp6pvEdAh1JoC2CQGZdU6HbNP1v2p6P",
+            "nozrhjhkCr3zXT3BiT4WCodYCUFeQvcdUkM7MqhKqge",
+            "nozrwQtWhEdrA6W8dkbt9gnUaMs52PdAv5byipnadq3",
+            "nozUacTVWub3cL4mJmGCYjKZTnE9RbdY5AP46iQgbPJ",
+            "nozWCyTPppJjRuw2fpzDhhWbW355fzosWSzrrMYB1Qk",
+            "nozWNju6dY353eMkMqURqwQEoM3SFgEKC6psLCSfUne",
+            "nozxNBgWohjR75vdspfxR5H9ceC7XXH99xpxhVGt3Bb",
+            "TJzUUoKA3ngRDkgf6g42r2tv4uUNnf2S2mngawi61fi",  #以下Merkle QuickSlotのtip Titan Primeモードで利用される
+            "Eqd6r1pThnbYgtn6kLy4a7zFELFHkyiFesiYaC6eYg9v",
+            "9xSYXtWXX2Gv6x3QA8Ffv1mGeLzn2oV2Sh3ZLrcxF8EX",
+            "ARFWuFgvNjjAyw8Sb77JjZF2kQvduCh9uWyYU9wrdgNp",
+            "AKAikQvacoWtK3TC6Wx4TUappTw6NuTnPqWHBA6WymgP",
+            "5yhYeqTB7tNXJUEopfCMX43pcFdCaQFjdUxb3RqAg5yY",
+            "2NASvutUxvRWuvVygtVyT2vsNgFDbg5Gbe8K8mzZAkje",
+            "FGtPX6qVePUPwYJ29tENeDu7ucFVLQmkeNDthYjPYPeB",
+            "8B6Ayvfq2yNnAai3dkdmoExpxcyBbwhptTQTdndPZUUG",
+            "Aru6VYgVEvz2Bki6Sm4fjNuJAc1XVbD7gyRBLsNe3MoB",
+            "BgNWpV557p3fPUmHCREg1qwUdDRKtzKpndJijs4sWd3u",
+            "A9Hk5FtpHvED5TN49y4ahmBtc1sNWoFEnPiXXGPxAmNj",
+            "H5DNFugVFjFRkPhcTkVCRfTugVzGYa3jATa7zed4pbFg",
+            "8h2PSH4XaMp28JWRDEwDmXyQWMyLWT5RYA9WKkcCiPvZ",
+            "Hjaq8W4h4RBKx11YNRyQMRJtU7ccVoXv46cgLAbgMEjV",
+            "TJzUUoKA3ngRDkgf6g42r2tv4uUNnf2S2mngawi61fi",
+            "G7bdAL1cykNJaSnfCZGGVfuBeKf3R1dx2H1JjQhhKsRf",
+            "3GHLrYyEPsfVnFwcPg1EJst1rkLhxRHaYuS7UL36kwtA",
+            "CPh9BMcZfzYd5NJf2ucDAAz5PWK32EgJY9qRGm2rQNAy",
+            "9YS3QR6o8JEfsvyNHNuG5NqxaFsJnRr6t6itM7b73YjD",
+            "6TbHNfUpLpGjn1R7PiPMsxsffivE3noMMJ8oCTyxiuPQ"}
 
 if __name__ == "__main__":
     import initial
 
     df = initial._run_initial()
     df = analyze(df)
+
     copying(df)
